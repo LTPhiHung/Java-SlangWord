@@ -139,6 +139,23 @@ public class SlangDictionaryApp {
 
 	}
 	
+	public void findSlangWords() {
+		System.out.println("Enter the definition you want to search: ");
+		System.out.print("Enter a definition: ");
+		String word = inputSlangWord();
+		System.out.printf("%-30.30s  %-30.30s%n", "Slang Word" , "Defination");
+		boolean checkFind = false;
+		for (Map.Entry<String, String> m : slangWords.entrySet()) {
+			if ((m.getValue()).toLowerCase().contains(word.toLowerCase())) {
+				checkFind = true;
+				System.out.printf("%-30.30s  %-30.30s%n", m.getKey(), m.getValue());
+				historySearch.put(m.getKey(), m.getValue());
+			}
+		}
+		if (!checkFind) {
+			System.out.println("Not found!");
+		}
+	}
 	
 	public void output() {
 
