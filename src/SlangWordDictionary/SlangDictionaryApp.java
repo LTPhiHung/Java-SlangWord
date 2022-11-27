@@ -205,7 +205,21 @@ public class SlangDictionaryApp {
 		}
 		System.out.println("Add new word successfully!");
 	}
-
+	
+	public void EditWord() {
+		System.out.print("Enter the word you want to edit: ");
+		String word = inputSlangWord();
+		if (checkSlangWordExist(word)) {
+			System.out.print("Old definition: " + slangWords.get(word) + "\n");
+			System.out.print("Enter the new definition: ");
+			String definition = inputSlangWord();
+			slangWords.put(word, definition);
+			System.out.println("Edit successfully!");
+		} else {
+			System.out.println("Word not found!");
+		}
+		System.out.println("Press enter to continue...");
+	}
 	
 	public void output() {
 
