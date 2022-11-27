@@ -97,6 +97,49 @@ public class SlangDictionaryApp {
 
 	}
 	
+	public String inputSlangWord() {
+		String word = "";
+		do {
+			BufferedReader bReader;
+			try {
+				bReader = new BufferedReader(new InputStreamReader(System.in, "utf-8"));
+				word = bReader.readLine();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			if (word.equals("")) {
+				System.out.print("Enter agian! Your input: ");
+			}
+		} while (word.equals(""));
+		return word;
+
+	}
+	
+	public void findDefinition() {
+		System.out.println("Search a slang word");
+		System.out.print("Enter a word: ");
+		String word = inputSlangWord();
+		System.out.printf("%-30.30s  %-30.30s%n", "Slang Word" , "Defination");
+		if (slangWords.get(word) != null) {
+			historySearch.put(word, slangWords.get(word));
+			System.out.printf("%-30.30s  %-30.30s%n", word , slangWords.get(word));
+		} else {
+			boolean checkFind = false;
+			for (Map.Entry<String, String> m : slangWords.entrySet()) {
+				if ((m.getKey()).toLowerCase().contains(word.toLowerCase())) {
+					checkFind = true;
+					System.out.printf("%-30.30s  %-30.30s%n",m.getKey(), m.getValue());
+					historySearch.put(m.getKey(), m.getValue());
+				}
+			}
+			if (!checkFind) {
+				System.out.println("Not found!");
+			}
+		}
+
+	}
+	
+	
 	public void output() {
 
 		for (Map.Entry<String, String> m : slangWords.entrySet()) {
