@@ -245,8 +245,22 @@ public class SlangDictionaryApp {
 			System.out.println("Word not found!");
 		}
 	}
-
 	
+	public void RestoreBackup() {
+		System.out.println("Are you sure you want to restore backup? (Y/N)");
+		System.out.print("Enter your choice: ");
+		String choice = inputSlangWord();
+		if (choice.equals("Y") || choice.equals("y")) {
+			slangWords.clear();
+			loadData("slang_original.txt");
+			size = slangWords.size();
+			System.out.println("Backup restored!");
+
+		} else {
+			System.out.println("Backup not restored!");
+		}
+	}
+
 	public void output() {
 
 		for (Map.Entry<String, String> m : slangWords.entrySet()) {

@@ -6,9 +6,10 @@ public class Main {
 //		slangWords.output();
 //		slangWords.AddNewWord();
 //		slangWords.EditSlangWord();
-		slangWords.deleteSlangWord();
-		slangWords.findDefinition();
+//		slangWords.deleteSlangWord();
+//		slangWords.findDefinition();
 //		slangWords.findSlangWords();
 //		slangWords.ViewSearchHistory();
+		slangWords.RestoreBackup();
 	}
 }
