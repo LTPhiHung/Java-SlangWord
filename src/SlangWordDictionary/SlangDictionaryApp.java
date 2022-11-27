@@ -9,6 +9,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 
 public class SlangDictionaryApp {
@@ -119,16 +120,16 @@ public class SlangDictionaryApp {
 		System.out.println("Search a slang word");
 		System.out.print("Enter a word: ");
 		String word = inputSlangWord();
-		System.out.printf("%-30.30s  %-30.30s%n", "Slang Word" , "Defination");
+		System.out.printf("%-20s %-20s\n", "Slang Word" , "Defination");
 		if (slangWords.get(word) != null) {
 			historySearch.put(word, slangWords.get(word));
-			System.out.printf("%-30.30s  %-30.30s%n", word , slangWords.get(word));
+			System.out.printf("%-20s %-20s\n", word , slangWords.get(word));
 		} else {
 			boolean checkFind = false;
 			for (Map.Entry<String, String> m : slangWords.entrySet()) {
 				if ((m.getKey()).toLowerCase().contains(word.toLowerCase())) {
 					checkFind = true;
-					System.out.printf("%-30.30s  %-30.30s%n",m.getKey(), m.getValue());
+					System.out.printf("%-20s %-20s\n",m.getKey(), m.getValue());
 					historySearch.put(m.getKey(), m.getValue());
 				}
 			}
@@ -143,12 +144,12 @@ public class SlangDictionaryApp {
 		System.out.println("Enter the definition you want to search: ");
 		System.out.print("Enter a definition: ");
 		String word = inputSlangWord();
-		System.out.printf("%-30.30s  %-30.30s%n", "Slang Word" , "Defination");
+		System.out.printf("%-20s %-20s\n", "Slang Word" , "Defination");
 		boolean checkFind = false;
 		for (Map.Entry<String, String> m : slangWords.entrySet()) {
 			if ((m.getValue()).toLowerCase().contains(word.toLowerCase())) {
 				checkFind = true;
-				System.out.printf("%-30.30s  %-30.30s%n", m.getKey(), m.getValue());
+				System.out.printf("%-20s %-20s\n", m.getKey(), m.getValue());
 				historySearch.put(m.getKey(), m.getValue());
 			}
 		}
@@ -156,6 +157,22 @@ public class SlangDictionaryApp {
 			System.out.println("Not found!");
 		}
 	}
+	
+	public void ViewSearchHistory() {
+		if (historySearch.size() == 0) {
+			System.out.println("No search history!");
+		} else {
+			System.out.println("Search history:");
+			int i = 1;
+			System.out.printf("%-20s %-20s %-20s\n", "STT", "Slang Word" , "Defination");
+			Set<String> keySet = historySearch.keySet();
+			for (String key : keySet) {
+				System.out.printf("%-20s %-20s %-20s\n",i + ". ",  key , historySearch.get(key));
+				i++;
+			}
+		}
+	}
+	
 	
 	public void output() {
 
