@@ -7,11 +7,13 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.regex.Pattern;
 
 public class SlangDictionaryApp {
 	private TreeMap<String, String> slangWords;
@@ -271,11 +273,86 @@ public class SlangDictionaryApp {
 		return listEntries.get(randomIndex).getKey();
 	}
 	
+	public String randomdefinition() {
+		int randomIndex = (int) (Math.random() * size);
+		Set<Map.Entry<String, String>> entries = slangWords.entrySet();
+		List<Map.Entry<String, String>> listEntries = new ArrayList<Map.Entry<String, String>>(entries);
+
+		return listEntries.get(randomIndex).getValue();
+	}
+	
 	public void RandomWord() {
 		String word = randomWSlangWord();
 		System.out.println("Slang word: " + word + ", definition: " + slangWords.get(word));
 	}
+	
 
+	public boolean isNumeric(String string) {
+
+		String regex = "[0-9]+[\\.]?[0-9]*";
+		return Pattern.matches(regex, string);
+	}
+
+	public void Quiz(int correctAnswer) {
+		boolean checkAnwer = false;
+		for (int i = 1; i <= answers.size(); i++) {
+			System.out.println(i + ": " + answers.get(i - 1));
+		}
+		int userAnswer = 0;
+
+		do {
+			if (userAnswer < 0 || userAnswer >= answers.size()) {
+
+				System.out.println("Please enter a valid answer!");
+			}
+			System.out.print("Enter your answer: ");
+			String line = inputSlangWord();
+			if (isNumeric(line)) {
+				userAnswer = Integer.parseInt(line) - 1;
+			} else {
+				userAnswer = -1;
+			}
+
+		} while (userAnswer < 0 || userAnswer >= answers.size());
+
+		if (userAnswer == -1) {
+			System.out.println("You haven't answered yet!");
+		} else if (userAnswer == correctAnswer) {
+			System.out.println("=====>Correct Answer!");
+			checkAnwer = true;
+		} else {
+			System.out.println("=====>Wrong Answer!");
+		}
+
+		if (!checkAnwer) {
+			System.out.println("*The correct answer is: " + answers.get(correctAnswer));
+		}
+		answers.removeAll(answers);
+	}
+
+	public void GuessDefinition() {
+		int correctAnswer = 0;
+		String word = randomWSlangWord();
+		String difination = slangWords.get(word);
+
+		System.out.println("Guess the definition of: " + word);
+		answers.add(difination);
+
+		for (int i = 1; i < 4; i++) {
+			String temp = randomdefinition();
+			if (!temp.equals(difination)) {
+				answers.add(temp);
+			}
+		}
+		Collections.shuffle(answers);
+		for (int i = 0; i < 4; i++) {
+			if (answers.get(i).equals(difination)) {
+				correctAnswer = i;
+			}
+		}
+		Quiz(correctAnswer);
+	}
+	
 	public void output() {
 
 		for (Map.Entry<String, String> m : slangWords.entrySet()) {
