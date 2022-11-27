@@ -173,6 +173,39 @@ public class SlangDictionaryApp {
 		}
 	}
 	
+	public void AddNewWord() {
+		System.out.print("Enter the slang word: ");
+		String word = inputSlangWord();
+		System.out.print("Enter the definition: ");
+		String definition = inputSlangWord();
+		String type;
+		System.out.println("Choose type of edit: ");
+		System.out.println("1. overwrite");
+		System.out.println("2. duplicate");
+		System.out.print("Your choice: ");
+		if (checkSlangWordExist(word)) {
+			do {
+
+				type = inputSlangWord();
+				if (type.equals("1") || type.equals("2")) {
+					break;
+				}
+			} while (true);
+
+			System.out.print("Old definition: " + slangWords.get(word) + "\n");
+			System.out.print("Enter the new definition: ");
+			if (type.equals("1")) {
+				add(word, definition);
+			} else {
+				definition = slangWords.get(word) + "| " + definition;
+				add(word, definition);
+			}
+		} else {
+			add(word, definition);
+		}
+		System.out.println("Add new word successfully!");
+	}
+
 	
 	public void output() {
 
