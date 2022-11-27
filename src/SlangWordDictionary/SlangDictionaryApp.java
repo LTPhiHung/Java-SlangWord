@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
@@ -259,6 +260,20 @@ public class SlangDictionaryApp {
 		} else {
 			System.out.println("Backup not restored!");
 		}
+	}
+	
+	public String randomWSlangWord() {
+		int randomIndex = (int) (Math.random() * size);
+
+		Set<Map.Entry<String, String>> entries = slangWords.entrySet();
+		List<Map.Entry<String, String>> listEntries = new ArrayList<Map.Entry<String, String>>(entries);
+
+		return listEntries.get(randomIndex).getKey();
+	}
+	
+	public void RandomWord() {
+		String word = randomWSlangWord();
+		System.out.println("Slang word: " + word + ", definition: " + slangWords.get(word));
 	}
 
 	public void output() {

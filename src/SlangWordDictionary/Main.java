@@ -10,6 +10,7 @@ public class Main {
 //		slangWords.findDefinition();
 //		slangWords.findSlangWords();
 //		slangWords.ViewSearchHistory();
-		slangWords.RestoreBackup();
+//		slangWords.RestoreBackup();
+		slangWords.RandomWord();
 	}
 }
