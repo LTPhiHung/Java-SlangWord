@@ -206,7 +206,7 @@ public class SlangDictionaryApp {
 		System.out.println("Add new word successfully!");
 	}
 	
-	public void EditWord() {
+	public void EditSlangWord() {
 		System.out.print("Enter the word you want to edit: ");
 		String word = inputSlangWord();
 		if (checkSlangWordExist(word)) {
@@ -220,6 +220,32 @@ public class SlangDictionaryApp {
 		}
 		System.out.println("Press enter to continue...");
 	}
+	
+	public void remove(String word) {
+		slangWords.remove(word);
+		size--;
+	}
+
+	public void deleteSlangWord() {
+		System.out.print("Enter the word you want to delete: ");
+		String word = inputSlangWord();
+		if (checkSlangWordExist(word)) {
+			System.out.println("Slang word: " + word + " , definition: " + slangWords.get(word));
+			System.out.println("Are you sure you want to delete this word? (Y/N)");
+			System.out.println("Enter Y if you want to delete this word, and N if you don't want to delete this word");
+			System.out.print("Enter your choice: ");
+			String choice = inputSlangWord();
+			if (choice.equalsIgnoreCase("Y")) {
+				System.out.println("Delete successfully!");
+				remove(word);
+			} else {
+				System.out.println("Delete unsuccessfully!");
+			}
+		} else {
+			System.out.println("Word not found!");
+		}
+	}
+
 	
 	public void output() {
 

@@ -5,7 +5,8 @@ public class Main {
 		SlangDictionaryApp slangWords = new SlangDictionaryApp();
 //		slangWords.output();
 //		slangWords.AddNewWord();
-		slangWords.EditWord();
+//		slangWords.EditSlangWord();
+		slangWords.deleteSlangWord();
 		slangWords.findDefinition();
 //		slangWords.findSlangWords();
 //		slangWords.ViewSearchHistory();
