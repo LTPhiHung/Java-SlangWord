@@ -353,6 +353,29 @@ public class SlangDictionaryApp {
 		Quiz(correctAnswer);
 	}
 	
+	public void GuessSlangWord() {
+		int correctAnswer = 0;
+		String word = randomWSlangWord();
+		String difination = slangWords.get(word);
+		System.out.println("Guess the slang word of: " + difination);
+		answers.add(word);
+
+		for (int i = 1; i < 4; i++) {
+			String temp = randomWSlangWord();
+			if (!temp.equals(word)) {
+				answers.add(temp);
+			}
+		}
+		Collections.shuffle(answers);
+		for (int i = 0; i < 4; i++) {
+			if (answers.get(i).equals(word)) {
+				correctAnswer = i;
+			}
+		}
+		Quiz(correctAnswer);
+	}
+
+	
 	public void output() {
 
 		for (Map.Entry<String, String> m : slangWords.entrySet()) {

@@ -12,6 +12,7 @@ public class Main {
 //		slangWords.ViewSearchHistory();
 //		slangWords.RestoreBackup();
 //		slangWords.RandomWord();
-		slangWords.GuessDefinition();
+//		slangWords.GuessDefinition();
+		slangWords.GuessSlangWord();
 	}
 }
