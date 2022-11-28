@@ -121,7 +121,7 @@ class Main extends JPanel implements ItemListener
         );
         setLayout(new BorderLayout(5,5));
 		columnNames = new String[] { "Slang word", "Definition"};
-
+		dataValues = slangWord.slangWordList();
 		labelApp = new JLabel("SLANG DICTIONARY APP");
 		JPanel comboBoxPane = new JPanel();
 		String comboBoxItems[] = { FEATURE1, FEATURE2, FEATURE3, FEATURE4, FEATURE5, FEATURE6, FEATURE7, FEATURE8,  FEATURE9,  FEATURE10 };
@@ -130,7 +130,7 @@ class Main extends JPanel implements ItemListener
 		cb.setEditable(false);
 		cb.addItemListener(this);
 		comboBoxPane.add(cb);
-		
+
 		cards = new JPanel(new CardLayout());
 
 		// card1
@@ -154,6 +154,8 @@ class Main extends JPanel implements ItemListener
         middlePanel1 = new JPanel();
         middlePanel1.setLayout(new FlowLayout());
 		table1 = new JTable();
+		TableModel model = new myTableModel();
+		table1.setModel(model);
 		scrollPane1 = new JScrollPane(table1);
 		scrollPane1.setSize(150, 150);
 
@@ -200,6 +202,7 @@ class Main extends JPanel implements ItemListener
         middlePanel2 = new JPanel();
         middlePanel2.setLayout(new FlowLayout());
 		table2 = new JTable();
+		table2.setModel(model);
 		scrollPane2 = new JScrollPane(table2);
 		scrollPane2.setSize(150, 150);
 

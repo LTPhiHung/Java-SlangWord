@@ -258,7 +258,6 @@ public class SlangDictionaryApp {
 	public String[][] slangWordList() {
 		ArrayList<String> listMeaning = new ArrayList();
 		for (Map.Entry<String, String> m : slangWords.entrySet()) {
-			System.out.println(m.getKey() + " " + m.getValue());
 			listMeaning.add(m.getKey());
 		}
 		int size = listMeaning.size();
