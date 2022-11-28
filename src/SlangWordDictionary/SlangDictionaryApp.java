@@ -1,18 +1,7 @@
 package SlangWordDictionary;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
+import java.io.*;
+import java.util.*;
 import java.util.regex.Pattern;
 
 public class SlangDictionaryApp {
@@ -20,16 +9,20 @@ public class SlangDictionaryApp {
 	private int size;
 	LinkedHashMap<String, String> historySearch;
 	private ArrayList<String> answers;
+	int correctAnswer;
+	String question;
 
 	public SlangDictionaryApp() {
 		slangWords = new TreeMap<String, String>();
 		historySearch = new LinkedHashMap<String, String>();
 		size = 0;
-		loadData("slang.txt");
+		correctAnswer = 0;
+		question = "";
 		answers = new ArrayList<String>();
-
+		//		saveFile("slang_original.txt");
+		loadData("slang.txt");
 	}
-	
+
 	public TreeMap<String, String> getSlangWords() {
 		return slangWords;
 	}
@@ -66,7 +59,11 @@ public class SlangDictionaryApp {
 		slangWords.put(word, definition);
 		size++;
 	}
-	
+
+	public String getDefinition(String word) {
+		return slangWords.get(word);
+	}
+
 	public void loadData(String fileName) {
 		File file = new File(fileName);
 		BufferedReader br = null;
@@ -77,7 +74,7 @@ public class SlangDictionaryApp {
 
 			while (line != null) {
 				String[] slangWordTemp = line.split("`");
-				if (slangWordTemp.length != 1) {
+				if (slangWordTemp.length == 2 ) {
 					if (!checkSlangWordExist(slangWordTemp[0])) {
 						add(slangWordTemp[0], slangWordTemp[1]);
 					}
@@ -98,162 +95,127 @@ public class SlangDictionaryApp {
 				System.out.println("file was probably never opened " + ex);
 			}
 		}
-
 	}
-	
-	public String inputSlangWord() {
-		String word = "";
-		do {
-			BufferedReader bReader;
-			try {
-				bReader = new BufferedReader(new InputStreamReader(System.in, "utf-8"));
-				word = bReader.readLine();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			if (word.equals("")) {
-				System.out.print("Enter agian! Your input: ");
-			}
-		} while (word.equals(""));
-		return word;
 
-	}
 	
-	public void findDefinition() {
-		System.out.println("Search a slang word");
-		System.out.print("Enter a word: ");
-		String word = inputSlangWord();
-		System.out.printf("%-20s %-20s\n", "Slang Word" , "Defination");
+	public void saveFile(String fileName) {
+		File file = new File(fileName);
+		try {
+			if (!file.exists()) {
+				file.createNewFile();
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		try {
+			BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), "UTF-8"));
+			for (Map.Entry<String, String> m : slangWords.entrySet()) {
+				out.write(m.getKey() + "`" + m.getValue());
+				out.newLine();
+			}
+
+			out.close();
+		} catch (IOException e) {
+			System.out.println("Error: " + e.getMessage());
+		}
+	}
+
+
+	public String[][] findDefinition(String word) {
+		ArrayList<String> listMeaning = new ArrayList();
 		if (slangWords.get(word) != null) {
 			historySearch.put(word, slangWords.get(word));
-			System.out.printf("%-20s %-20s\n", word , slangWords.get(word));
+			listMeaning.add(word);
 		} else {
-			boolean checkFind = false;
 			for (Map.Entry<String, String> m : slangWords.entrySet()) {
 				if ((m.getKey()).toLowerCase().contains(word.toLowerCase())) {
-					checkFind = true;
-					System.out.printf("%-20s %-20s\n",m.getKey(), m.getValue());
+					listMeaning.add(m.getKey());
 					historySearch.put(m.getKey(), m.getValue());
 				}
 			}
-			if (!checkFind) {
-				System.out.println("Not found!");
-			}
 		}
-
+		
+		int size = listMeaning.size();
+		String s[][] = new String[size][2];
+		for (int i = 0; i < size; i++) {
+			s[i][0] = listMeaning.get(i);
+			s[i][1] = slangWords.get(listMeaning.get(i));
+		}
+		return s;
 	}
-	
-	public void findSlangWords() {
-		System.out.println("Enter the definition you want to search: ");
-		System.out.print("Enter a definition: ");
-		String word = inputSlangWord();
-		System.out.printf("%-20s %-20s\n", "Slang Word" , "Defination");
-		boolean checkFind = false;
+
+	public String[][] findSlangWords(String word) {
+		ArrayList<String> listMeaning = new ArrayList();
 		for (Map.Entry<String, String> m : slangWords.entrySet()) {
 			if ((m.getValue()).toLowerCase().contains(word.toLowerCase())) {
-				checkFind = true;
-				System.out.printf("%-20s %-20s\n", m.getKey(), m.getValue());
+				listMeaning.add(m.getKey());
 				historySearch.put(m.getKey(), m.getValue());
 			}
 		}
-		if (!checkFind) {
-			System.out.println("Not found!");
+		int size = listMeaning.size();
+		String s[][] = new String[size][2];
+		for (int i = 0; i < size; i++) {
+			s[i][0] = listMeaning.get(i);
+			s[i][1] = slangWords.get(listMeaning.get(i));
 		}
+		return s;
 	}
-	
-	public void ViewSearchHistory() {
-		if (historySearch.size() == 0) {
-			System.out.println("No search history!");
+
+	String[][] ViewSearchHistory() {
+		ArrayList<String> listMeaning = new ArrayList();
+		int size = historySearch.size();
+		String s[][] = new String[size][2];
+
+		if (size == 0) {
+			return s;
 		} else {
 			System.out.println("Search history:");
-			int i = 1;
-			System.out.printf("%-20s %-20s %-20s\n", "STT", "Slang Word" , "Defination");
 			Set<String> keySet = historySearch.keySet();
 			for (String key : keySet) {
-				System.out.printf("%-20s %-20s %-20s\n",i + ". ",  key , historySearch.get(key));
-				i++;
+				listMeaning.add(key);
 			}
 		}
+		for (int i = 0; i < size; i++) {
+			s[i][0] = listMeaning.get(i);
+			s[i][1] = slangWords.get(listMeaning.get(i));
+		}
+		return s;
 	}
-	
-	public void AddNewWord() {
-		System.out.print("Enter the slang word: ");
-		String word = inputSlangWord();
-		System.out.print("Enter the definition: ");
-		String definition = inputSlangWord();
-		String type;
-		System.out.println("Choose type of edit: ");
-		System.out.println("1. overwrite");
-		System.out.println("2. duplicate");
-		System.out.print("Your choice: ");
-		if (checkSlangWordExist(word)) {
-			do {
 
-				type = inputSlangWord();
-				if (type.equals("1") || type.equals("2")) {
-					break;
-				}
-			} while (true);
-
-			System.out.print("Old definition: " + slangWords.get(word) + "\n");
-			System.out.print("Enter the new definition: ");
-			if (type.equals("1")) {
-				add(word, definition);
-			} else {
-				definition = slangWords.get(word) + "| " + definition;
-				add(word, definition);
-			}
-		} else {
+	public void AddNewWord(int type, String word, String definition) {
+		if (type == 0) {
+			add(word, definition);
+		} 
+		if (type == 1){
+			definition = slangWords.get(word) + "| " + definition;
 			add(word, definition);
 		}
-		System.out.println("Add new word successfully!");
+		saveFile("slang.txt");
 	}
-	
-	public void EditSlangWord() {
-		System.out.print("Enter the word you want to edit: ");
-		String word = inputSlangWord();
-		if (checkSlangWordExist(word)) {
-			System.out.print("Old definition: " + slangWords.get(word) + "\n");
-			System.out.print("Enter the new definition: ");
-			String definition = inputSlangWord();
-			slangWords.put(word, definition);
-			System.out.println("Edit successfully!");
-		} else {
-			System.out.println("Word not found!");
-		}
-		System.out.println("Press enter to continue...");
+
+	public void editSlangWord(String word, String definition) {
+		slangWords.put(word, definition);
+		System.out.println("Edit successfully!");
+		saveFile("slang.txt");
 	}
-	
+
 	public void remove(String word) {
 		slangWords.remove(word);
 		size--;
 	}
-
-	public void deleteSlangWord() {
-		System.out.print("Enter the word you want to delete: ");
-		String word = inputSlangWord();
-		if (checkSlangWordExist(word)) {
-			System.out.println("Slang word: " + word + " , definition: " + slangWords.get(word));
-			System.out.println("Are you sure you want to delete this word? (Y/N)");
-			System.out.println("Enter Y if you want to delete this word, and N if you don't want to delete this word");
-			System.out.print("Enter your choice: ");
-			String choice = inputSlangWord();
-			if (choice.equalsIgnoreCase("Y")) {
-				System.out.println("Delete successfully!");
-				remove(word);
-			} else {
-				System.out.println("Delete unsuccessfully!");
-			}
+	
+	public void deleteSlangWord(boolean option, String word) {
+		if (option) {
+			remove(word);
+			saveFile("slang.txt");
+			System.out.println("Delete successfully!");
 		} else {
-			System.out.println("Word not found!");
+			System.out.println("Delete unsuccessfully!");
 		}
 	}
-	
-	public void RestoreBackup() {
-		System.out.println("Are you sure you want to restore backup? (Y/N)");
-		System.out.print("Enter your choice: ");
-		String choice = inputSlangWord();
-		if (choice.equals("Y") || choice.equals("y")) {
+
+	public void RestoreBackup(boolean option) {
+		if (option) {
 			slangWords.clear();
 			loadData("slang_original.txt");
 			size = slangWords.size();
@@ -262,8 +224,17 @@ public class SlangDictionaryApp {
 		} else {
 			System.out.println("Backup not restored!");
 		}
+
 	}
-	
+
+	public String randomDefinition() {
+		int randomIndex = (int) (Math.random() * size);
+		Set<Map.Entry<String, String>> entries = slangWords.entrySet();
+		List<Map.Entry<String, String>> listEntries = new ArrayList<Map.Entry<String, String>>(entries);
+
+		return listEntries.get(randomIndex).getValue();
+	}
+
 	public String randomWSlangWord() {
 		int randomIndex = (int) (Math.random() * size);
 
@@ -272,20 +243,32 @@ public class SlangDictionaryApp {
 
 		return listEntries.get(randomIndex).getKey();
 	}
-	
-	public String randomdefinition() {
-		int randomIndex = (int) (Math.random() * size);
-		Set<Map.Entry<String, String>> entries = slangWords.entrySet();
-		List<Map.Entry<String, String>> listEntries = new ArrayList<Map.Entry<String, String>>(entries);
 
-		return listEntries.get(randomIndex).getValue();
-	}
-	
-	public void RandomWord() {
+	public String[] RandomWord() {
+		String[] radomWord = new String [2];
 		String word = randomWSlangWord();
-		System.out.println("Slang word: " + word + ", definition: " + slangWords.get(word));
+		String definition = slangWords.get(word);
+		System.out.println("Slang word: " + word + ", definition: " + definition);
+
+		radomWord[0] = word;
+		radomWord[1] = definition;
+		return radomWord;
 	}
-	
+
+	public String[][] slangWordList() {
+		ArrayList<String> listMeaning = new ArrayList();
+		for (Map.Entry<String, String> m : slangWords.entrySet()) {
+			System.out.println(m.getKey() + " " + m.getValue());
+			listMeaning.add(m.getKey());
+		}
+		int size = listMeaning.size();
+		String s[][] = new String[size][2];
+		for (int i = 0; i < size; i++) {
+			s[i][0] = listMeaning.get(i);
+			s[i][1] = slangWords.get(listMeaning.get(i));
+		}
+		return s;
+	}
 
 	public boolean isNumeric(String string) {
 
@@ -293,71 +276,49 @@ public class SlangDictionaryApp {
 		return Pattern.matches(regex, string);
 	}
 
-	public void Quiz(int correctAnswer) {
-		boolean checkAnwer = false;
-		for (int i = 1; i <= answers.size(); i++) {
-			System.out.println(i + ": " + answers.get(i - 1));
-		}
-		int userAnswer = 0;
-
-		do {
-			if (userAnswer < 0 || userAnswer >= answers.size()) {
-
-				System.out.println("Please enter a valid answer!");
-			}
-			System.out.print("Enter your answer: ");
-			String line = inputSlangWord();
-			if (isNumeric(line)) {
-				userAnswer = Integer.parseInt(line) - 1;
-			} else {
-				userAnswer = -1;
-			}
-
-		} while (userAnswer < 0 || userAnswer >= answers.size());
-
-		if (userAnswer == -1) {
-			System.out.println("You haven't answered yet!");
-		} else if (userAnswer == correctAnswer) {
-			System.out.println("=====>Correct Answer!");
-			checkAnwer = true;
-		} else {
-			System.out.println("=====>Wrong Answer!");
-		}
-
-		if (!checkAnwer) {
-			System.out.println("*The correct answer is: " + answers.get(correctAnswer));
-		}
-		answers.removeAll(answers);
+	public String getQuestion() {
+		return question;
 	}
 
-	public void GuessDefinition() {
-		int correctAnswer = 0;
-		String word = randomWSlangWord();
-		String difination = slangWords.get(word);
+	public int getCorrectAnswer() {
+		return correctAnswer;
+	}
 
-		System.out.println("Guess the definition of: " + word);
-		answers.add(difination);
+	public String[] GuessDefinition() {
+		// int correctAnswer = 0;
+		String[] answerList = new String[4];
+		String word = randomWSlangWord();
+		String definition = slangWords.get(word);
+		
+		question = word;
+		answers.add(definition);
 
 		for (int i = 1; i < 4; i++) {
-			String temp = randomdefinition();
-			if (!temp.equals(difination)) {
+			String temp = randomDefinition();
+			if (!temp.equals(definition)) {
 				answers.add(temp);
 			}
 		}
 		Collections.shuffle(answers);
 		for (int i = 0; i < 4; i++) {
-			if (answers.get(i).equals(difination)) {
+			if (answers.get(i).equals(definition)) {
 				correctAnswer = i;
 			}
 		}
-		Quiz(correctAnswer);
+		for(int i = 0; i < answers.size(); i++) {
+			answerList[i] = answers.get(i);
+		}
+		answers.removeAll(answers);
+
+		return answerList;
 	}
 	
-	public void GuessSlangWord() {
-		int correctAnswer = 0;
+	public String[] GuessSlangWord() {
+		String[] answerList = new String[4];
 		String word = randomWSlangWord();
-		String difination = slangWords.get(word);
-		System.out.println("Guess the slang word of: " + difination);
+		String definition = slangWords.get(word);
+
+		question = definition;
 		answers.add(word);
 
 		for (int i = 1; i < 4; i++) {
@@ -372,15 +333,11 @@ public class SlangDictionaryApp {
 				correctAnswer = i;
 			}
 		}
-		Quiz(correctAnswer);
-	}
-
-	
-	public void output() {
-
-		for (Map.Entry<String, String> m : slangWords.entrySet()) {
-			System.out.println(m.getKey() + " " + m.getValue());
+		for(int i = 0; i < answers.size(); i++) {
+			answerList[i] = answers.get(i);
 		}
-		System.out.println(size);
+		answers.removeAll(answers);
+
+		return answerList;
 	}
 }
